@@ -3,6 +3,7 @@ import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 
+import WebhookRouter from './controllers/webhookController';
 // Creates and configures an ExpressJS web server.
 class App {
   // ref to Express instance
@@ -31,10 +32,11 @@ class App {
     // placeholder route handler
     router.get('/', (req, res, next) => {
       res.json({
-        message: 'Hello World!'
+        message: 'Welcome to NerdCats docker pull webhook host'
       });
     });
     this.express.use('/', router);
+    this.express.use('/pull', WebhookRouter);
   }
 
 }
