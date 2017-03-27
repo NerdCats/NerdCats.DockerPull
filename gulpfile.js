@@ -21,3 +21,4 @@ gulp.task('assets', function() {
 });
 
 gulp.task('default', ['watch', 'assets']);
+gulp.task('build', ['assets']);
