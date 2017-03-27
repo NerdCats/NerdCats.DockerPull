@@ -2,7 +2,6 @@ import { Router, Request, Response, NextFunction } from 'express';
 
 export class WebhookController {
     router: Router;
-
     /**
      * Web hook controller for automatic docker pull
      */
@@ -17,8 +16,8 @@ export class WebhookController {
      * @param res Response interface
      * @param next Next handler in middleware (Don't use if you don't know what you are doing)
      */
-    public pull(req: Request, res: Response, next: NextFunction) {
-        res.json({ message: "wee!" });
+    public pull(request: Request, response: Response, nextFunc: NextFunction) {
+        response.sendStatus(501);
     }
 
     init() {
@@ -26,5 +25,4 @@ export class WebhookController {
     }
 }
 
-const webhookController = new WebhookController();
-export default webhookController.router;
+export default WebhookController;

@@ -3,15 +3,18 @@ import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 
-import WebhookRouter from './controllers/webhookController';
+import { WebhookController } from './controllers/webhookController';
 // Creates and configures an ExpressJS web server.
 class App {
+
   // ref to Express instance
   public express: express.Application;
+  public webhookController: WebhookController;
 
   //Run configuration methods on the Express instance.
   constructor() {
     this.express = express();
+    this.webhookController = new WebhookController();
     this.middleware();
     this.routes();
   }
@@ -36,7 +39,7 @@ class App {
       });
     });
     this.express.use('/', router);
-    this.express.use('/pull', WebhookRouter);
+    this.express.use('/pull', this.webhookController.router);
   }
 
 }
