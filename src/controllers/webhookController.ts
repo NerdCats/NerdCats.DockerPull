@@ -1,4 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
+import * as child_process from 'child_process';
 
 export class WebhookController {
     router: Router;
@@ -17,7 +18,8 @@ export class WebhookController {
      * @param next Next handler in middleware (Don't use if you don't know what you are doing)
      */
     public pull(request: Request, response: Response, nextFunc: NextFunction) {
-        response.sendStatus(501);
+        child_process.spawn('sh', ['commands/docker-pull.sh'], { stdio: 'inherit' });
+        response.sendStatus(200);
     }
 
     init() {
