@@ -18,7 +18,19 @@ export class WebhookController {
      * @param next Next handler in middleware (Don't use if you don't know what you are doing)
      */
     public pull(request: Request, response: Response, nextFunc: NextFunction) {
-        child_process.spawn('sh', ['commands/docker-pull.sh'], { stdio: 'inherit' });
+        let proc = child_process.spawn('sh', ['dist/commands/docker-pull.sh', 'nginx:latest', '-p 5000:80']);
+        proc.stdout.on('data', function (data) {
+            console.log(data.toString());
+        });
+
+        proc.stderr.on('data', function (data) {
+            console.log('ERR:' + data.toString());
+        });
+
+        proc.on('exit', function (code) {
+            console.log('child process exited with code ' + code.toString());
+        });
+
         response.sendStatus(200);
     }
 
