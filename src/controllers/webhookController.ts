@@ -19,19 +19,30 @@ export class WebhookController {
      */
     public pull(request: Request, response: Response, nextFunc: NextFunction) {
         let proc = child_process.spawn('sh', ['dist/commands/docker-pull.sh', 'nginx:latest', '-p 5000:80']);
-        proc.stdout.on('data', function (data) {
-            console.log(data.toString());
+
+        let resStream: string = "";
+
+        proc.stdout.addListener('data', (data) => {
+            resStream += data.toString().trim();
+            var lines = resStream.split("\n");
+            for (var i in lines) {
+                if (i.trim().length) {
+                    response.write('stdout: ' + lines[i] + "\n");
+                    console.log('data: ' + lines[i]);
+                }
+            }
         });
 
-        proc.stderr.on('data', function (data) {
-            console.log('ERR:' + data.toString());
+        proc.stderr.addListener('data', (data) => {
+            response.status(500);
+            response.write('ERR:' + data);
+            console.log('ERR:' + data);
         });
 
-        proc.on('exit', function (code) {
-            console.log('child process exited with code ' + code.toString());
+        proc.addListener('exit', (code) => {
+            response.end('child process exited with code ' + code);
+            console.log('child process exited with code ' + code);
         });
-
-        response.sendStatus(200);
     }
 
     init() {
