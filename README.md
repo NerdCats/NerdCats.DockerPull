@@ -18,7 +18,7 @@ Docker hook is a very simple node.js app that listens to your http requests and 
 To change the auth token, please modify `src/config.json` before hosting.
 
 ## To invoke a docker pull
-By default the service listens to port 3000. Send a post request like the following, (this is for a sample `nginx:latest` docker image)
+By default the service listens to port 3000. Send a post request like the following to `/pull`, (this is for a sample `nginx:latest` docker image)
 
 ```json
 {
