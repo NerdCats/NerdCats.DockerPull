@@ -1,4 +1,4 @@
-# NerdCats.DockerPull
+# NerdCats.DockerPull [![Build Status](https://travis-ci.org/NerdCats/NerdCats.DockerPull.svg?branch=master)](https://travis-ci.org/NerdCats/NerdCats.DockerPull)
 Automatic Docker Deployment using WebHooks
 
 Docker hook is a very simple node.js app that listens to your http requests and triggers your specified command.
