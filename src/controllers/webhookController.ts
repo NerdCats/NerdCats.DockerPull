@@ -26,31 +26,7 @@ export class WebhookController {
             if (!body.image) { return response.status(400).send('no docker image name provided'); }
             body.arguments = body.arguments || '';
 
-            let proc = child_process.spawn('sh', ['dist/commands/docker-pull.sh', body.image, body.arguments]);
-
-            let resStream: string = "";
-
-            proc.stdout.addListener('data', (data) => {
-                resStream += data.toString().trim();
-                var lines = resStream.split("\n");
-                for (var i in lines) {
-                    if (i.trim().length) {
-                        response.write('stdout: ' + lines[i] + "\n");
-                        console.log('data: ' + lines[i]);
-                    }
-                }
-            });
-
-            proc.stderr.addListener('data', (data) => {
-                response.status(500);
-                response.write('ERR:' + data);
-                console.log('ERR:' + data);
-            });
-
-            proc.addListener('exit', (code) => {
-                response.end('child process exited with code ' + code);
-                console.log('child process exited with code ' + code);
-            });
+            this.executeDockerPull(body.image, body.arguments, response);
         }
         else {
             // Sending back Not Implemented for now since we dont really know what we will do here
@@ -59,8 +35,42 @@ export class WebhookController {
         }
     }
 
+    /**
+     * Pull a new version of a specified docker image, stop current deployment and start a new one
+     * @param image docker image name to be pulled
+     * @param args docker arguments to be appened with docker run
+     * @param response response object to stream back the result
+     */
+    executeDockerPull(image: string, args: string, response: Response) {
+        let proc = child_process.spawn('sh', ['dist/commands/docker-pull.sh', image, args]);
+
+        let resStream: string = "";
+
+        proc.stdout.addListener('data', (data) => {
+            resStream += data.toString().trim();
+            var lines = resStream.split("\n");
+            for (var i in lines) {
+                if (i.trim().length) {
+                    response.write('stdout: ' + lines[i] + "\n");
+                    console.log('data: ' + lines[i]);
+                }
+            }
+        });
+
+        proc.stderr.addListener('data', (data) => {
+            response.status(500);
+            response.write('ERR:' + data);
+            console.log('ERR:' + data);
+        });
+
+        proc.addListener('exit', (code) => {
+            response.end('child process exited with code ' + code);
+            console.log('child process exited with code ' + code);
+        });
+    }
+
     init() {
-        this.router.post('/', this.pull);
+        this.router.post('/', this.pull.bind(this));
     }
 }
 
