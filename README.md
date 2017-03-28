@@ -1,18 +1,33 @@
-# Developing a RESTful API With Node and TypeScript
+# NerdCats.DockerPull
+Automatic Docker Deployment using WebHooks
 
-## Want to learn how to build this project?
+Docker hook is a very simple node.js app that listens to your http requests and triggers your specified command.
 
-Check out the [blog post](http://mherman.org/blog/2016/11/05/developing-a-restful-api-with-node-and-typescript/#.WB3zyeErJE4).
+## Features
+- Lightweight, runs on express
+- Dumb, simple authentication
+- Simple to set up
 
-## Want to use this project?
+## Steps to get it working
+- Clone the repo
+- `npm install`
+- `gulp clean`
+- `gulp build`
+- `npm start`
 
-1. Fork/Clone
-1. Install dependencies - `npm install`
-1. Compile - `gulp scripts`
-1. Compile assets - `gulp assets`
-1. Run the development server - `npm start`
-1. Test - `npm test`
+To change the auth token, please modify `src/config.json` before hosting.
 
-## Sample Projects
+## To invoke a docker pull
+By default the service listens to port 3000. Send a post request like the following, (this is for a sample `nginx:latest` docker image)
 
-- [Simple whois REST API](https://github.com/wingsuitist/whoissv)
+```json
+{
+	"mode": "docker",
+	"image": "nginx:latest",
+	"arguments": "-p 5000:80"
+}
+```
+
+make sure you add the `token` query parameter with your defined `auth_token` in the config.json
+
+Essentially it will execute a simple bash file inside `src/commands` folder. You can customize the repo further for your purpose. i.e. any bash file and other things you need in case of your deployment.
